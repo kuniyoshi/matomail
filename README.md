@@ -1,8 +1,8 @@
 # matomail
 
-`matomail` は 「纏める」を "tail" します。
+`matomail` combines "matome" (Japanese for "gather/collect") with "tail".
 
-* 纏める: gather, collect
+* matome (纏める): to gather, collect, or summarize
 
 # USAGE
 
@@ -22,16 +22,14 @@
 
 # SPECIFICATION
 
-- Read line from STDIN
-- Required to disable buffer
-- If the new line is same as previous line;
-  - Clear the line
-  - Add count with parenthesis prefix e.g.: (3)
-  - Print the line just after the prefix
-- Show usage on `--help` option
-- `same as previous` test is customizable
-  - As a default, line will be treated as same when completely same as previous
-  - If specified regular expression, line masked by it
-  - e.g.: the regular expression is `\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}`
-          the line's datetime is masked when comparison.
-
+- Reads lines from STDIN
+- Operates without buffering
+- When a new line is identical to the previous line:
+  - Clears the line
+  - Adds a count with parenthesis prefix (e.g., "(3)")
+  - Prints the line immediately after the prefix
+- Displays usage information with the `--help` option
+- Customizable "same as previous" comparison logic:
+  - By default, lines are considered identical when they match exactly
+  - If a regular expression is specified, matching portions are masked during comparison
+  - Example: With regex `\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}`, the datetime portion of lines is masked when comparing
