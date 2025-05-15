@@ -2,33 +2,36 @@
 
 # バイナリ名
 BINARY_NAME=matomail
+BIN_DIR=bin
+SRC_DIR=src
 
 all: lint build
 
 build:
-	go build -o $(BINARY_NAME) .
+	mkdir -p $(BIN_DIR)
+	go build -o $(BIN_DIR)/$(BINARY_NAME) ./$(SRC_DIR)
 
 run: build
-	./$(BINARY_NAME)
+	$(BIN_DIR)/$(BINARY_NAME)
 
 fmt:
-	go fmt ./...
+	go fmt ./$(SRC_DIR)/...
 
 vet:
-	go vet ./...
+	go vet ./$(SRC_DIR)/...
 
 staticcheck:
 	@if ! command -v staticcheck &> /dev/null; then \
 		echo "Installing staticcheck..."; \
 		go install honnef.co/go/tools/cmd/staticcheck@latest; \
 	fi
-	staticcheck ./...
+	staticcheck ./$(SRC_DIR)/...
 
 lint: fmt vet staticcheck
 
 clean:
 	go clean
-	rm -f $(BINARY_NAME)
+	rm -rf $(BIN_DIR)
 
 test:
-	go test -v ./...
+	go test -v ./$(SRC_DIR)/...
