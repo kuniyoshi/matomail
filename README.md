@@ -33,3 +33,31 @@
   - By default, lines are considered identical when they match exactly
   - If a regular expression is specified, matching portions are masked during comparison
   - Example: With regex `\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}`, the datetime portion of lines is masked when comparing
+
+# TODO
+
+Based on the specification, the following features need to be implemented:
+
+1. Core functionality:
+   - [ ] Read lines from STDIN without buffering
+   - [ ] Implement line comparison logic
+   - [ ] Add counter for identical consecutive lines
+   - [ ] Clear and rewrite lines with counter prefix
+
+2. Command-line options:
+   - [ ] Implement `--help` option to display usage information
+   - [ ] Add option for specifying custom regex pattern for line comparison
+
+3. Performance optimizations:
+   - [ ] Ensure efficient handling of high-volume log streams
+   - [ ] Minimize memory usage for long-running processes
+
+4. Testing:
+   - [ ] Create unit tests for line comparison logic
+   - [ ] Add integration tests with sample log files
+   - [ ] Test with various regex patterns for comparison customization
+
+5. Documentation:
+   - [ ] Add detailed documentation for all command-line options
+   - [ ] Include examples of common use cases
+   - [ ] Document performance characteristics and limitations
