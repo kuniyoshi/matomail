@@ -34,6 +34,19 @@
   - If a regular expression is specified, matching portions are masked during comparison
   - Example: With regex `\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}`, the datetime portion of lines is masked when comparing
 
+# TEST
+
+```
+% cat test_data/1
+asdf
+asdf
+asdf
+% cat test_data/1 | ./matomail
+(1) asdf
+...
+(3) asdf
+```
+
 # TODO
 
 Based on the specification, the following features need to be implemented:
