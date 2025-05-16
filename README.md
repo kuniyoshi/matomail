@@ -33,6 +33,10 @@
   - By default, lines are considered identical when they match exactly
   - If a regular expression is specified, matching portions are masked during comparison
   - Example: With regex `\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}`, the datetime portion of lines is masked when comparing
+- `matome` gathers same lines
+  - The first line of the lines, it has a `(1)` prefix, and leads space
+  - The last line of the lines, it has a counted prefix
+  - Other lines are gathered as `...`
 
 # TEST
 
