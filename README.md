@@ -65,6 +65,30 @@ asdf
 
 This demonstrates how three identical lines are condensed into a more readable format with a counter.
 
+# RUNNING TESTS
+
+To run the tests:
+
+```
+% cd src
+% go test
+```
+
+For more verbose output:
+
+```
+% cd src
+% go test -v
+```
+
+The test suite includes:
+1. Basic functionality test - verifies handling of consecutive identical lines
+2. Regex pattern test - tests masking of timestamps and other dynamic content
+3. Empty input test - ensures proper handling of empty input
+4. Special characters test - validates handling of lines with special characters
+
+Note: The current tests use mock implementations. In the future, these can be updated to test against the actual binary.
+
 # TODO
 
 Based on the specification, the following features need to be implemented:
