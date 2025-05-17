@@ -17,15 +17,13 @@ type LineProcessor struct {
 	Writer  *bufio.Writer
 	Scanner *bufio.Scanner
 	Re      *regexp.Regexp
-	Debug   bool
 }
 
-func NewLineProcessor(writer *bufio.Writer, scanner *bufio.Scanner, re *regexp.Regexp, debug bool) *LineProcessor {
+func NewLineProcessor(writer *bufio.Writer, scanner *bufio.Scanner, re *regexp.Regexp) *LineProcessor {
 	return &LineProcessor{
 		Writer:  writer,
 		Scanner: scanner,
 		Re:      re,
-		Debug:   debug,
 	}
 }
 
@@ -39,10 +37,6 @@ func (lp *LineProcessor) ProcessLines() error {
 		currentLine = lp.Scanner.Text()
 
 		isSame := areLinesSame(currentLine, prevLine, lp.Re)
-
-		if lp.Debug {
-			fmt.Fprintf(os.Stderr, "DEBUG: isSame: %v\n", isSame)
-		}
 
 		if !isSame {
 			count = 0
@@ -98,7 +92,7 @@ func main() {
 	stdout := bufio.NewWriterSize(os.Stdout, 1) // 出力をバッファリングしないように設定
 	scanner := bufio.NewScanner(os.Stdin)
 
-	processor := NewLineProcessor(stdout, scanner, re, true)
+	processor := NewLineProcessor(stdout, scanner, re)
 	if err := processor.ProcessLines(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error processing lines: %v\n", err)
 		os.Exit(1)
@@ -112,7 +106,6 @@ func areLinesSame(currentLine, prevLine string, re *regexp.Regexp) bool {
 	return re.ReplaceAllString(currentLine, "") == re.ReplaceAllString(prevLine, "")
 }
 
-// 使用方法を表示する関数
 func displayHelp() {
 	fmt.Print(`
 matomail - Combines "matome" (gather/collect) with "tail"
