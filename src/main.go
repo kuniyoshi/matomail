@@ -6,13 +6,74 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"strings"
 )
 
 const (
 	upOneLine = "\033[1A"
 	eraseLine = "\033[2K"
 )
+
+type LineProcessor struct {
+	Writer  *bufio.Writer
+	Scanner *bufio.Scanner
+	Re      *regexp.Regexp
+	Debug   bool
+}
+
+func NewLineProcessor(writer *bufio.Writer, scanner *bufio.Scanner, re *regexp.Regexp, debug bool) *LineProcessor {
+	return &LineProcessor{
+		Writer:  writer,
+		Scanner: scanner,
+		Re:      re,
+		Debug:   debug,
+	}
+}
+
+func (lp *LineProcessor) ProcessLines() error {
+	var prevLine string
+	var currentLine string
+	var count int
+
+	for lp.Scanner.Scan() {
+		prevLine = currentLine
+		currentLine = lp.Scanner.Text()
+
+		isSame := areLinesSame(currentLine, prevLine, lp.Re)
+
+		if lp.Debug {
+			fmt.Fprintf(os.Stderr, "DEBUG: isSame: %v\n", isSame)
+		}
+
+		if !isSame {
+			count = 0
+			fmt.Fprintf(lp.Writer, "%s\n", currentLine)
+			lp.Writer.Flush()
+			continue
+		}
+
+		count++
+
+		if count == 1 {
+			fmt.Fprint(lp.Writer, upOneLine)
+			fmt.Fprint(lp.Writer, eraseLine)
+			fmt.Fprintf(lp.Writer, "(1) %s\n", prevLine)
+			fmt.Fprintf(lp.Writer, "(2) %s\n", currentLine)
+			lp.Writer.Flush()
+		} else {
+			fmt.Fprint(lp.Writer, upOneLine)
+			fmt.Fprint(lp.Writer, eraseLine)
+			fmt.Fprintf(lp.Writer, "...\n")
+			fmt.Fprintf(lp.Writer, "(%d) %s\n", count+1, currentLine)
+			lp.Writer.Flush()
+		}
+	}
+
+	if err := lp.Scanner.Err(); err != nil {
+		return fmt.Errorf("error reading from scanner: %w", err)
+	}
+
+	return nil
+}
 
 func main() {
 	helpFlag := flag.Bool("help", false, "Display usage information")
@@ -36,47 +97,11 @@ func main() {
 
 	// 出力をバッファリングしないように設定
 	stdout := bufio.NewWriterSize(os.Stdout, 1)
-
 	scanner := bufio.NewScanner(os.Stdin)
 
-	var prevLine string
-	var currentLine string
-	var count int
-
-	for scanner.Scan() {
-		prevLine = currentLine
-		currentLine = scanner.Text()
-
-		isSame := areLinesSame(currentLine, prevLine, re)
-
-		fmt.Fprintf(os.Stderr, "DEBUG: isSame: %v\n", isSame)
-
-		if !isSame {
-			count = 0
-			fmt.Fprintf(stdout, "%s\n", currentLine)
-			stdout.Flush()
-			continue
-		}
-
-		count++
-
-		if count == 1 {
-			fmt.Fprint(stdout, upOneLine)
-			fmt.Fprint(stdout, eraseLine)
-			fmt.Fprintf(stdout, "(1) %s\n", prevLine)
-			fmt.Fprintf(stdout, "(2) %s\n", currentLine)
-			stdout.Flush()
-		} else {
-			fmt.Fprint(stdout, upOneLine)
-			fmt.Fprint(stdout, eraseLine)
-			fmt.Fprintf(stdout, "...\n")
-			fmt.Fprintf(stdout, "(%d) %s\n", count+1, currentLine)
-			stdout.Flush()
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading from stdin: %v\n", err)
+	processor := NewLineProcessor(stdout, scanner, re, true)
+	if err := processor.ProcessLines(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error processing lines: %v\n", err)
 		os.Exit(1)
 	}
 }
@@ -90,7 +115,7 @@ func areLinesSame(currentLine, prevLine string, re *regexp.Regexp) bool {
 
 // 使用方法を表示する関数
 func displayHelp() {
-	helpText := `
+	fmt.Print(`
 matomail - Combines "matome" (gather/collect) with "tail"
 
 USAGE:
@@ -106,10 +131,8 @@ DESCRIPTION:
   When consecutive identical lines are found, it displays a counter prefix (e.g., "(3)")
   followed by the line content.
 
-  By default, lines are considered identical when they match exactly. If a regular
-  expression pattern is specified with --pattern, matching portions are masked during
-  comparison, allowing lines with varying timestamps or other dynamic content to be
-  treated as identical.
-`
-	fmt.Println(strings.TrimSpace(helpText))
+EXAMPLES:
+  tail -f /var/log/syslog | matomail
+  tail -f /var/log/syslog | matomail --pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
+`)
 }
