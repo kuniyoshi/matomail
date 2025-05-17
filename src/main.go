@@ -38,12 +38,16 @@ func main() {
 	// 標準入力からの読み取り
 	scanner := bufio.NewScanner(os.Stdin)
 
-	var prevLine string // 前の行
-	var count int       // 同一行のカウンター
+	var prevLine string
+	var currentLine string
+	var count int
 
 	// 標準入力から行を読み取り
 	for scanner.Scan() {
-		currentLine := scanner.Text()
+		prevLine = currentLine
+		currentLine = scanner.Text()
+		fmt.Fprintf(os.Stderr, "DEBUG: currentLine: %s\n", currentLine)
+		fmt.Fprintf(os.Stderr, "DEBUG: prevLine: %s\n", prevLine)
 		isSame := func() bool {
 			if re == nil {
 				return false
@@ -51,9 +55,11 @@ func main() {
 			return re.ReplaceAllString(currentLine, "") == re.ReplaceAllString(prevLine, "")
 		}()
 
+		fmt.Fprintf(os.Stderr, "DEBUG: isSame: %v\n", isSame)
+
 		if !isSame {
 			count = 0
-			fmt.Fprintf(stdout, "%s\n", prevLine)
+			fmt.Fprintf(stdout, "%s\n", currentLine)
 			stdout.Flush()
 			continue
 		}
