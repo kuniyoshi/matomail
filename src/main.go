@@ -29,6 +29,7 @@ func main() {
 		}
 	}
 
+	// 出力をバッファリングしないように設定
 	stdout := bufio.NewWriterSize(os.Stdout, 1)
 	scanner := bufio.NewScanner(os.Stdin)
 
