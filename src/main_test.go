@@ -63,7 +63,7 @@ func TestLineProcessor_ProcessLines(t *testing.T) {
 				}
 			}
 
-			processor := NewLineProcessor(writer, scanner, re)
+			processor := newLineProcessor(writer, scanner, re)
 			if err := processor.ProcessLines(); (err != nil) != tt.wantErr {
 				t.Errorf("ProcessLines() error = %v, wantErr %v", err, tt.wantErr)
 				return

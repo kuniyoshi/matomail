@@ -13,21 +13,21 @@ const (
 	eraseLine = "\033[2K"
 )
 
-type LineProcessor struct {
+type lineProcessor struct {
 	Writer  *bufio.Writer
 	Scanner *bufio.Scanner
 	Re      *regexp.Regexp
 }
 
-func NewLineProcessor(writer *bufio.Writer, scanner *bufio.Scanner, re *regexp.Regexp) *LineProcessor {
-	return &LineProcessor{
+func newLineProcessor(writer *bufio.Writer, scanner *bufio.Scanner, re *regexp.Regexp) *lineProcessor {
+	return &lineProcessor{
 		Writer:  writer,
 		Scanner: scanner,
 		Re:      re,
 	}
 }
 
-func (lp *LineProcessor) ProcessLines() error {
+func (lp *lineProcessor) ProcessLines() error {
 	var prevLine string
 	var currentLine string
 	var count int
@@ -92,7 +92,7 @@ func main() {
 	stdout := bufio.NewWriterSize(os.Stdout, 1) // 出力をバッファリングしないように設定
 	scanner := bufio.NewScanner(os.Stdin)
 
-	processor := NewLineProcessor(stdout, scanner, re)
+	processor := newLineProcessor(stdout, scanner, re)
 	if err := processor.ProcessLines(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error processing lines: %v\n", err)
 		os.Exit(1)
