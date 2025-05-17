@@ -105,18 +105,12 @@ Based on the specification, the following features need to be implemented:
    - [ ] Add option for specifying custom regex patterns for flexible line comparison
    - [ ] Include examples of common regex patterns in the help text
 
-3. Performance optimizations:
-   - [ ] Ensure efficient handling of high-volume log streams with minimal CPU usage
-   - [ ] Optimize memory usage for long-running processes to prevent leaks
-   - [ ] Implement efficient regex compilation and caching when patterns are specified
-
-4. Testing:
+3. Testing:
    - [ ] Create comprehensive unit tests for the line comparison logic
    - [ ] Develop integration tests with various sample log files and formats
-   - [ ] Test performance with large log files to ensure scalability
    - [ ] Validate behavior with various regex patterns for comparison customization
 
-5. Documentation:
+4. Documentation:
    - [ ] Create detailed documentation for all command-line options and their use cases
    - [ ] Include examples of common use cases with sample inputs and outputs
    - [ ] Document performance characteristics, limitations, and best practices
