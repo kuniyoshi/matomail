@@ -88,30 +88,3 @@ The test suite includes:
 4. Special characters test - validates handling of lines with special characters
 
 Note: The current tests use mock implementations. In the future, these can be updated to test against the actual binary.
-
-# TODO
-
-Based on the specification, the following features need to be implemented:
-
-1. Core functionality:
-   - [x] Implement non-buffered reading of lines from STDIN for real-time processing
-   - [x] Develop robust line comparison logic with support for exact matching
-   - [x] Create counter mechanism for tracking identical consecutive lines
-   - [x] Implement line clearing and reprinting with appropriate counter prefixes
-   - [x] Add support for the ellipsis (`...`) representation of intermediate identical lines
-
-2. Command-line options:
-   - [x] Implement comprehensive `--help` option with clear usage instructions
-   - [x] Add option for specifying custom regex patterns for flexible line comparison
-   - [x] Include examples of common regex patterns in the help text
-
-3. Testing:
-   - [ ] Create comprehensive unit tests for the line comparison logic
-   - [ ] Develop integration tests with various sample log files and formats
-   - [ ] Validate behavior with various regex patterns for comparison customization
-
-4. Documentation:
-   - [ ] Create detailed documentation for all command-line options and their use cases
-   - [ ] Include examples of common use cases with sample inputs and outputs
-   - [ ] Document performance characteristics, limitations, and best practices
-   - [ ] Add troubleshooting section for common issues
