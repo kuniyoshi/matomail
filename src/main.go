@@ -10,18 +10,15 @@ import (
 )
 
 func main() {
-	// コマンドラインオプションの定義
 	helpFlag := flag.Bool("help", false, "Display usage information")
 	regexPattern := flag.String("pattern", "", "Regular expression pattern for line comparison masking")
 	flag.Parse()
 
-	// --helpオプションが指定された場合、使用方法を表示して終了
 	if *helpFlag {
 		displayHelp()
 		return
 	}
 
-	// 正規表現パターンが指定された場合、コンパイル
 	var re *regexp.Regexp
 	if *regexPattern != "" {
 		var err error
@@ -32,28 +29,18 @@ func main() {
 		}
 	}
 
-	// 出力をバッファリングしないように設定
 	stdout := bufio.NewWriterSize(os.Stdout, 1)
-
-	// 標準入力からの読み取り
 	scanner := bufio.NewScanner(os.Stdin)
 
 	var prevLine string
 	var currentLine string
 	var count int
 
-	// 標準入力から行を読み取り
 	for scanner.Scan() {
 		prevLine = currentLine
 		currentLine = scanner.Text()
-		fmt.Fprintf(os.Stderr, "DEBUG: currentLine: %s\n", currentLine)
-		fmt.Fprintf(os.Stderr, "DEBUG: prevLine: %s\n", prevLine)
-		isSame := func() bool {
-			if re == nil {
-				return currentLine == prevLine
-			}
-			return re.ReplaceAllString(currentLine, "") == re.ReplaceAllString(prevLine, "")
-		}()
+
+		isSame := areLinesSame(currentLine, prevLine, re)
 
 		fmt.Fprintf(os.Stderr, "DEBUG: isSame: %v\n", isSame)
 
@@ -67,34 +54,27 @@ func main() {
 		count++
 
 		if count == 1 {
-			// move up virtual terminal
 			fmt.Fprint(stdout, "\033[1A")
-
-			// clear virtual terminal
 			fmt.Fprint(stdout, "\033[2K")
-
-			// print prevLine
 			fmt.Fprintf(stdout, "(1) %s\n", prevLine)
-
-			// print current line
 			fmt.Fprintf(stdout, "(2) %s\n", currentLine)
-
 			stdout.Flush()
 		} else {
-			// move up virtual terminal
 			fmt.Fprint(stdout, "\033[1A")
-
-			// clear virtual terminal
 			fmt.Fprint(stdout, "\033[2K")
-
 			fmt.Fprintf(stdout, "...\n")
-
-			// print current line
 			fmt.Fprintf(stdout, "(%d) %s\n", count+1, currentLine)
-
 			stdout.Flush()
 		}
 	}
+}
+
+func areLinesSame(currentLine, prevLine string, re *regexp.Regexp) bool {
+	if re == nil {
+		return currentLine == prevLine
+	}
+	return re.ReplaceAllString(currentLine, "") == re.ReplaceAllString(prevLine, "")
+}
 
 	// エラーチェック
 	if err := scanner.Err(); err != nil {
