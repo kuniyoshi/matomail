@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+const (
+	upOneLine = "\033[1A"
+	eraseLine = "\033[2K"
+)
+
 func main() {
 	helpFlag := flag.Bool("help", false, "Display usage information")
 	regexPattern := flag.String("pattern", "", "Regular expression pattern for line comparison masking")
@@ -55,18 +60,23 @@ func main() {
 		count++
 
 		if count == 1 {
-			fmt.Fprint(stdout, "\033[1A")
-			fmt.Fprint(stdout, "\033[2K")
+			fmt.Fprint(stdout, upOneLine)
+			fmt.Fprint(stdout, eraseLine)
 			fmt.Fprintf(stdout, "(1) %s\n", prevLine)
 			fmt.Fprintf(stdout, "(2) %s\n", currentLine)
 			stdout.Flush()
 		} else {
-			fmt.Fprint(stdout, "\033[1A")
-			fmt.Fprint(stdout, "\033[2K")
+			fmt.Fprint(stdout, upOneLine)
+			fmt.Fprint(stdout, eraseLine)
 			fmt.Fprintf(stdout, "...\n")
 			fmt.Fprintf(stdout, "(%d) %s\n", count+1, currentLine)
 			stdout.Flush()
 		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading from stdin: %v\n", err)
+		os.Exit(1)
 	}
 }
 
@@ -75,13 +85,6 @@ func areLinesSame(currentLine, prevLine string, re *regexp.Regexp) bool {
 		return currentLine == prevLine
 	}
 	return re.ReplaceAllString(currentLine, "") == re.ReplaceAllString(prevLine, "")
-}
-
-	// エラーチェック
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading from stdin: %v\n", err)
-		os.Exit(1)
-	}
 }
 
 // 使用方法を表示する関数
