@@ -50,7 +50,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "DEBUG: prevLine: %s\n", prevLine)
 		isSame := func() bool {
 			if re == nil {
-				return false
+				return currentLine == prevLine
 			}
 			return re.ReplaceAllString(currentLine, "") == re.ReplaceAllString(prevLine, "")
 		}()
@@ -74,13 +74,10 @@ func main() {
 			fmt.Fprint(stdout, "\033[2K")
 
 			// print prevLine
-			fmt.Fprintf(stdout, "(%d) %s\n", count, prevLine)
-
-			// move down virtual terminal
-			fmt.Fprint(stdout, "\033[1B")
+			fmt.Fprintf(stdout, "(1) %s\n", prevLine)
 
 			// print current line
-			fmt.Fprintf(stdout, "%s\n", currentLine)
+			fmt.Fprintf(stdout, "(2) %s\n", currentLine)
 
 			stdout.Flush()
 		} else {
@@ -92,11 +89,8 @@ func main() {
 
 			fmt.Fprintf(stdout, "...\n")
 
-			// move down virtual terminal
-			fmt.Fprint(stdout, "\033[1B")
-
 			// print current line
-			fmt.Fprintf(stdout, "%s\n", currentLine)
+			fmt.Fprintf(stdout, "(%d) %s\n", count+1, currentLine)
 
 			stdout.Flush()
 		}
