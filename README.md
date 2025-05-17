@@ -94,16 +94,16 @@ Note: The current tests use mock implementations. In the future, these can be up
 Based on the specification, the following features need to be implemented:
 
 1. Core functionality:
-   - [ ] Implement non-buffered reading of lines from STDIN for real-time processing
-   - [ ] Develop robust line comparison logic with support for exact matching
-   - [ ] Create counter mechanism for tracking identical consecutive lines
-   - [ ] Implement line clearing and reprinting with appropriate counter prefixes
-   - [ ] Add support for the ellipsis (`...`) representation of intermediate identical lines
+   - [x] Implement non-buffered reading of lines from STDIN for real-time processing
+   - [x] Develop robust line comparison logic with support for exact matching
+   - [x] Create counter mechanism for tracking identical consecutive lines
+   - [x] Implement line clearing and reprinting with appropriate counter prefixes
+   - [x] Add support for the ellipsis (`...`) representation of intermediate identical lines
 
 2. Command-line options:
-   - [ ] Implement comprehensive `--help` option with clear usage instructions
-   - [ ] Add option for specifying custom regex patterns for flexible line comparison
-   - [ ] Include examples of common regex patterns in the help text
+   - [x] Implement comprehensive `--help` option with clear usage instructions
+   - [x] Add option for specifying custom regex patterns for flexible line comparison
+   - [x] Include examples of common regex patterns in the help text
 
 3. Testing:
    - [ ] Create comprehensive unit tests for the line comparison logic
